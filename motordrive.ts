@@ -7,11 +7,11 @@
  * @Description:
  *
  * 本代码为I2C主机程序
- * 通过8通道PWM控制电机
+ * 通过4通道PWM控制电机
  * 
  * I2C从机部分：
- * 1.使用 STC8G1K08 用硬件I2C模拟从机
- * 2.用定时器0模拟8路PWM输出
+ * 1.使用 STC8G1K08A 用硬件I2C模拟从机
+ * 2.用定时器0模拟4路PWM输出
  *
  * 主机每次只能写两个字节数据
  * 第一个数据用于配置PWM引脚
@@ -52,9 +52,9 @@ let address = 0x30
 
 enum Motorlist 
 {
-    //% block="M1"
+    //% block="A"
     M1 = 1,
-    //% block="M2"
+    //% block="B"
     M2 = 2
 }
 
@@ -66,21 +66,6 @@ enum Direction1
     Backward = 0
 }
 
-enum Blink 
-{
-    //% block="left"
-    left =  1,
-    //% block="right"
-    right = 0
-}
-
-enum Switch
-{
-    //% block="ON"
-    ON = 1,
-    //% block="OFF"
-    OFF = 0
-}
 //% color="#AA278D"
 namespace Motor {
 
@@ -92,12 +77,12 @@ namespace Motor {
     export function motor(motor: Motorlist, direction: Direction1, pwmvalue: number) {
         switch(motor){
             case 1: // M1电机控制
-                if (direction) { motor_i2cWrite(0x01, pwmvalue); motor_i2cWrite(0x02, 255);}
-                else { motor_i2cWrite(0x02, pwmvalue); motor_i2cWrite(0x01, 255); }
+                if (direction) { motor_i2cWrite(0x01, 255-pwmvalue); motor_i2cWrite(0x02, 255);}
+                else { motor_i2cWrite(0x02, 255-pwmvalue); motor_i2cWrite(0x01, 255); }
                 break;
             case 2: // M2电机控制
-                if (direction) { motor_i2cWrite(0x03, pwmvalue); motor_i2cWrite(0x04, 255); }
-                else { motor_i2cWrite(0x04, pwmvalue); motor_i2cWrite(0x03, 255); }
+                if (direction) { motor_i2cWrite(0x03, 255-pwmvalue); motor_i2cWrite(0x04, 255); }
+                else { motor_i2cWrite(0x04, 255-pwmvalue); motor_i2cWrite(0x03, 255); }
                 break;
         }
     }
