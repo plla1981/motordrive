@@ -66,6 +66,13 @@ enum Direction1
     Backward = 0
 }
 
+enum LED_rgb_L_R {
+    //% bolck="LED_R"
+    LED_R = 1,
+    //% bolck="LED_L"
+    LED_L = 0,
+}
+
 //% color="#AA278D"
 namespace Motor {
 
@@ -85,6 +92,19 @@ namespace Motor {
                 else { motor_i2cWrite(0x04, 255-pwmvalue); motor_i2cWrite(0x03, 255); }
                 break;
         }
+    }
+    
+    //% block="RGB = %place rad   = $arg1 green =$arg2 blue  = $arg3"
+    //% direction.shadow=timePicker
+    //% pwmvalue.min=0 pwmvalue.max=1 
+    export function led_rgb(place: LED_rgb_L_R, arg1: number, arg2: number, arg3: number) {
+        switch (place) {
+            case 0: { motor_i2cWrite(0x09, arg1); motor_i2cWrite(0x0a, arg2); motor_i2cWrite(0x0b, arg3); }
+                break;
+            case 1: { motor_i2cWrite(0x0c, arg1); motor_i2cWrite(0x0d, arg2); motor_i2cWrite(0x0e, arg3); }
+                break;
+        }
+
     }
 
     function motor_i2cWrite(reg: number, value: number) 
